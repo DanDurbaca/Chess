@@ -1,0 +1,73 @@
+body {
+    display: flex;
+}
+
+#placeHolder {
+    height: 700px;
+    width: 640px;
+    background-color: teal;
+}
+
+#listOfMoves {
+    width: 200px;
+    height: 560px;
+    background-color: yellowgreen;
+}
+
+.square {
+    /*background-color: thistle;*/
+    display: inline-block;
+    width: 70px;
+    height: 70px;
+    box-sizing: border-box;
+    background-position: center;
+    /* Center the image */
+    background-repeat: no-repeat;
+    /* Do not repeat the image */
+    background-size: cover;
+    /* Resize the background image to cover the entire container */
+    text-align: left;
+}
+
+.blackPawn {
+    background-image: url("./../img/black_pawn.png");
+    cursor: grab;
+}
+
+.whitePawn {
+    background-image: url("./../img/white_pawn.png");
+    cursor: grab;
+}
+
+.targetSquare {
+    border-width: -20px;
+    border-style: solid;
+    border-color: yellow;
+}
+
+.whiteSquare {
+    background-color: bisque;
+}
+
+.blackSquare {
+    background-color: rgb(85, 66, 66);
+}
+
+.oneLine {
+    display: block;
+    height: 70px;
+    background-color: white;
+    overflow: hidden;
+    text-align: center;
+    white-space: nowrap;
+}
+
+.topLine{
+    line-height: 120px;
+    /* for correctly alligning the address text (a-h)*/
+}
+
+.middleLine{
+    padding: 5px;
+    vertical-align: 30px;
+}
