@@ -17,11 +17,13 @@ class ChessView {
 
     addMoveToList(strMoveToAdd)
     {
-        let elem = document.createElement("li");
-        
-        elem.innerHTML = strMoveToAdd;
-        let listOfMoves = document.getElementById("listOfMoves");
-        listOfMoves.appendChild(elem);
+        if (strMoveToAdd!="")
+        {
+            let elem = document.createElement("li");    
+            elem.innerHTML = strMoveToAdd;
+            let listOfMoves = document.getElementById("listOfMoves");
+            listOfMoves.appendChild(elem);
+        }
     }
 
     bindMouseUpOrLeave(handlerFromController) {
