@@ -54,7 +54,7 @@ class ChessModel {
         if (fromX < 0 || fromX >= BOARD_SIZE || fromY < 0 || fromY >= BOARD_SIZE)
             throw "Out of the board position";
         if (isNull(board[fromX][fromY]))
-            throw "No a piece to move from";
+            throw "Not a piece to move from";
         return board[fromX][fromY].getPossibleMoves();
     }
 

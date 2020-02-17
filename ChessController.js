@@ -45,7 +45,7 @@ class ChessController {
                 this.GameView.removePieceFromBoard(this.GameData.chessBoard[whereX][whereY]);
                 this.GameView.bindMouseUpOrLeave(this.releasedPieceEvent);
             } else
-                console.log("No possible move !");
+                console.log("No possible moves !");
         } else
             throw "Trying to raise inexistent piece";
     }
