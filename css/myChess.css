@@ -3,6 +3,7 @@ body {
 }
 
 #placeHolder {
+  position: relative;
   height: 700px;
   width: 640px;
   background-color: teal;
@@ -81,5 +82,20 @@ body {
 
 .blackQueen {
   background-image: url("./../img/black_queen.png");
+  cursor: grab;
+}
+
+.blackRook {
+  background-image: url("./../img/black_rook.png");
+  cursor: grab;
+}
+
+.blackBishop {
+  background-image: url("./../img/black_bishop.png");
+  cursor: grab;
+}
+
+.blackKnight {
+  background-image: url("./../img/black_knight.png");
   cursor: grab;
 }

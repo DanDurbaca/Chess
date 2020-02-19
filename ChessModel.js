@@ -11,6 +11,17 @@ class ChessModel {
     // console.log(this.chessBoard);
   }
 
+  getPiecesOfColor(selectColor) {
+    let arrRetVal = new Array();
+    this.chessBoard.forEach(row => {
+      row.forEach(cell => {
+        if (!isNull(cell))
+          if (cell.PieceColor == selectColor) arrRetVal.push(cell);
+      });
+    });
+    return arrRetVal;
+  }
+
   initBoard() {
     this.chessBoard = new Array(BOARD_SIZE);
     for (let row = 0; row < BOARD_SIZE; row++) {

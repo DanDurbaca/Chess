@@ -1,15 +1,22 @@
 "use strict";
 
 const BOARD_ID = "placeHolder";
+const MOVES_ID = "listOfMoves";
 
 class ChessView {
-  constructor() {}
+  constructor() {
+    this.Body = null;
+    this.ChessPlaceHolder = null;
+    this.listOfMoves = null;
+  }
 
   bindPageLoad(handlerFromController) {
     window.addEventListener("load", event => {
       // When adding the function name here (no arrow function)
       // this will NOT be the class - but the target html element !!
-      this.onPageLoad(event);
+      this.Body = document.getElementsByTagName("body");
+      this.ChessPlaceHolder = document.getElementById(BOARD_ID);
+      this.listOfMoves = document.getElementById(MOVES_ID);
       handlerFromController();
     });
   }
@@ -18,15 +25,25 @@ class ChessView {
     if (strMoveToAdd != "") {
       let elem = document.createElement("li");
       elem.innerHTML = strMoveToAdd;
-      let listOfMoves = document.getElementById("listOfMoves");
-      listOfMoves.appendChild(elem);
+      this.listOfMoves.appendChild(elem);
     }
   }
 
-  bindMouseUpOrLeave(handlerFromController) {
-    let fullBoard = this.ChessPlaceHolder;
+  bindMouseDown(X, Y, handlerFromController) {
+    let squareId = ChessView.getIdFromCoordinates(X, Y);
+    let domElement = document.getElementById(squareId);
+    domElement.addEventListener(
+      "mousedown",
+      event => {
+        event.preventDefault();
+        handlerFromController(X, Y);
+      },
+      true
+    );
+  }
+
+  bindMouseUp(handlerFromController) {
     let _mouseUp = event => {
-      // console.log(event.target.id);
       // get x and y from event.target.id
       if (ChessView.isIdACell(event.target.id)) {
         let arrCoordinates = ChessView.getCoordinatesFromId(event.target.id);
@@ -39,11 +56,6 @@ class ChessView {
       document.removeEventListener("mouseup", _mouseUp, true);
     };
     document.addEventListener("mouseup", _mouseUp, true);
-  }
-
-  onPageLoad(event) {
-    this.Body = document.getElementsByTagName("body");
-    this.ChessPlaceHolder = document.getElementById(BOARD_ID);
   }
 
   displayBoardSquares(boardSize) {
@@ -84,49 +96,22 @@ class ChessView {
     this.ChessPlaceHolder.appendChild(addressLine);
   }
 
-  removePieceFromBoard(piece) {
-    if (!isNull(piece)) {
-      let squareId = ChessView.getIdFromCoordinates(piece.RowPos, piece.ColPos);
-      let domElement = document.getElementById(squareId);
-      let classNamePiece = piece.getClassName();
-
-      domElement.classList.remove(classNamePiece);
-      /*
+  removePieceFromBoard(X, Y, classNameOfPiece) {
+    let squareId = ChessView.getIdFromCoordinates(X, Y);
+    let domElement = document.getElementById(squareId);
+    domElement.classList.remove(classNameOfPiece);
+    /*
             remove OLD LISTENER !!
             */
-      let new_element = domElement.cloneNode(true);
-      domElement.parentNode.replaceChild(new_element, domElement);
-      domElement = new_element;
-    }
+    let new_element = domElement.cloneNode(true);
+    domElement.parentNode.replaceChild(new_element, domElement);
+    domElement = new_element;
   }
 
-  putPieceOnBoard(piece, handlerFromController) {
-    let squareId = ChessView.getIdFromCoordinates(piece.RowPos, piece.ColPos);
+  putPieceOnBoard(X, Y, classNameOfPiece) {
+    let squareId = ChessView.getIdFromCoordinates(X, Y);
     let domElement = document.getElementById(squareId);
-    let classNamePiece = piece.getClassName();
-    domElement.classList.add(classNamePiece);
-
-    domElement.addEventListener(
-      "mousedown",
-      function _mouseDown(event) {
-        event.preventDefault();
-        handlerFromController(piece.RowPos, piece.ColPos);
-      },
-      true
-    );
-  }
-
-  static isIdACell(givenId) {
-    return givenId.substring(0, 4) == "cell";
-  }
-
-  static getIdFromCoordinates(i, j) {
-    return "cell" + parseInt(i) + "-" + parseInt(j);
-  }
-
-  static getCoordinatesFromId(givenId) {
-    let numericPart = givenId.substring(4); // remove "cell" from the id
-    return numericPart.split("-");
+    domElement.classList.add(classNameOfPiece);
   }
 
   setCursorToPiece(stringOfCursorPiece) {
@@ -147,5 +132,20 @@ class ChessView {
       if (!off) domElem.classList.add("targetSquare");
       else domElem.classList.remove("targetSquare");
     }
+  }
+
+  // static member functions from here on ->
+
+  static isIdACell(givenId) {
+    return givenId.substring(0, 4) == "cell";
+  }
+
+  static getIdFromCoordinates(i, j) {
+    return "cell" + parseInt(i) + "-" + parseInt(j);
+  }
+
+  static getCoordinatesFromId(givenId) {
+    let numericPart = givenId.substring(4); // remove "cell" from the id
+    return numericPart.split("-");
   }
 }

@@ -13,6 +13,7 @@ class ChessController {
     this.ongoingPossibleMoves = null;
     this.whereWasPieceRaisedFromX = null;
     this.whereWasPieceRaisedFromY = null;
+    this.WhiteToMove = true; // TO DO -> alternating moves !
 
     this.GameView.bindPageLoad(this.loadedPageEvent);
   }
@@ -20,12 +21,17 @@ class ChessController {
   loadedPageEvent = () => {
     this.GameView.displayBoardSquares(BOARD_SIZE);
     this.refreshViewFromModel();
+    this.goNextMove();
   };
 
   removePieceEvent = pieceToRemove => {
     // callback to for the model remove a piece from board (view)
     if (!isNull(pieceToRemove))
-      this.GameView.removePieceFromBoard(pieceToRemove);
+      this.GameView.removePieceFromBoard(
+        pieceToRemove.RowPos,
+        pieceToRemove.ColPos,
+        pieceToRemove.getClassName()
+      );
     else
       console.log(
         "Trying to remove from view a piece that doesnt exist in the model"
@@ -49,16 +55,24 @@ class ChessController {
         this.whereWasPieceRaisedFromY = whereY;
         this.GameView.turnOnCells(this.ongoingPossibleMoves);
         this.GameView.removePieceFromBoard(
-          this.GameData.chessBoard[whereX][whereY]
+          whereX,
+          whereY,
+          this.GameData.chessBoard[whereX][whereY].getClassName()
         );
-        this.GameView.bindMouseUpOrLeave(this.releasedPieceEvent);
+        this.GameView.bindMouseUp(this.releasedPieceEvent);
       } else console.log("No possible moves !");
     } else throw "Trying to raise inexistent piece";
   };
 
   releasedPieceEvent = (whereX, whereY) => {
+    // TO DO HERE: promoting pawn !!
+    if (!this.pieceIsRaised)
+      throw "Released a piece on the board without RAISING IT !";
     this.pieceIsRaised = false;
-    this.GameView.turnOnCells(this.ongoingPossibleMoves, true);
+    this.GameView.turnOnCells(
+      this.ongoingPossibleMoves,
+      true /* this flag says turn OFF !*/
+    );
 
     let lastX = this.whereWasPieceRaisedFromX;
     let lastY = this.whereWasPieceRaisedFromY;
@@ -72,6 +86,8 @@ class ChessController {
         if (ChessModel.arePositionsIdentical(targetPosArr, posMove))
           bWillMoveThere = true;
     }
+    if (bWillMoveThere)
+      if (lastX == whereX && lastY == whereY) bWillMoveThere = false; // not an actual move !!
 
     if (bWillMoveThere) {
       let moveNotation = this.GameData.movePiece(
@@ -83,28 +99,30 @@ class ChessController {
       );
       this.GameView.addMoveToList(moveNotation);
       this.GameView.putPieceOnBoard(
-        this.GameData.chessBoard[whereX][whereY],
-        this.mouseDownOnPieceEvent
+        whereX,
+        whereY,
+        this.GameData.chessBoard[whereX][whereY].getClassName()
       );
+      this.goNextMove();
     } // released somewhere else !!
-    else {
-      if (
-        !isNull(lastX) &&
-        !isNull(lastY) &&
-        !isNull(this.GameData.chessBoard[lastX][lastY])
-      )
-        // put back the piece
-        this.GameView.putPieceOnBoard(
-          this.GameData.chessBoard[lastX][lastY],
-          this.mouseDownOnPieceEvent
-        );
-      else throw "Release mouse without press ?!!";
-    }
+    else if (
+      !isNull(lastX) &&
+      !isNull(lastY) &&
+      !isNull(this.GameData.chessBoard[lastX][lastY])
+    ) {
+      // put back the piece
+      this.GameView.putPieceOnBoard(
+        lastX,
+        lastY,
+        this.GameData.chessBoard[lastX][lastY].getClassName()
+      );
+      this.GameView.bindMouseDown(lastX, lastY, this.mouseDownOnPieceEvent);
+    } else throw "Release mouse without press ?!!";
+
     this.whereWasPieceRaisedFromX = null;
     this.whereWasPieceRaisedFromY = null;
     this.ongoingPossibleMoves = null;
 
-    //console.log("Released !!");
     this.GameView.setCursorToDefault();
   };
 
@@ -113,9 +131,45 @@ class ChessController {
       for (let col = 0; col < BOARD_SIZE; col++)
         if (!isNull(this.GameData.chessBoard[row][col])) {
           this.GameView.putPieceOnBoard(
-            this.GameData.chessBoard[row][col],
-            this.mouseDownOnPieceEvent
+            row,
+            col,
+            this.GameData.chessBoard[row][col].getClassName()
           );
         }
+  }
+
+  goNextMove() {
+    let piecesToMove = null;
+    let piecesToStayStill = null;
+    if (this.WhiteToMove == true) {
+      piecesToMove = this.GameData.getPiecesOfColor(PieceColors.White);
+      piecesToStayStill = this.GameData.getPiecesOfColor(PieceColors.Black);
+    } else {
+      piecesToMove = this.GameData.getPiecesOfColor(PieceColors.Black);
+      piecesToStayStill = this.GameData.getPiecesOfColor(PieceColors.White);
+    }
+    // add listeners for the pieces to move
+    piecesToMove.forEach(curPiece => {
+      this.GameView.bindMouseDown(
+        curPiece.RowPos,
+        curPiece.ColPos,
+        this.mouseDownOnPieceEvent
+      );
+    });
+
+    // remove listeners for the other pieces
+    piecesToStayStill.forEach(curPiece => {
+      this.GameView.removePieceFromBoard(
+        curPiece.RowPos,
+        curPiece.ColPos,
+        curPiece.getClassName()
+      );
+      this.GameView.putPieceOnBoard(
+        curPiece.RowPos,
+        curPiece.ColPos,
+        curPiece.getClassName()
+      );
+    });
+    this.WhiteToMove = !this.WhiteToMove; // switch for the next move
   }
 }
