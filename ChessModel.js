@@ -22,6 +22,10 @@ class ChessModel {
     return arrRetVal;
   }
 
+  getPieceAt(X, Y) {
+    return this.chessBoard[X][Y];
+  }
+
   initBoard() {
     this.chessBoard = new Array(BOARD_SIZE);
     for (let row = 0; row < BOARD_SIZE; row++) {
@@ -36,7 +40,14 @@ class ChessModel {
         // to do >> all pieces !
       }
     }
-    //this.ghostPawn = null; // en passant pawn - when NOT null it has position of ghostPawn
+  }
+
+  isMoveAPawnPromotion(fromX, fromY, toX, toY) {
+    // assume a VALID move !
+    let bRetVal = false;
+    if (this.chessBoard[fromX][fromY].PieceName == ChessPieceTypes.Pawn)
+      if (toX == 0 || toX == BOARD_SIZE - 1) bRetVal = true;
+    return bRetVal;
   }
 
   movePiece(fromX, fromY, toX, toY, controllerHandler) {

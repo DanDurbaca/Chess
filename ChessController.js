@@ -39,16 +39,17 @@ class ChessController {
   };
 
   mouseDownOnPieceEvent = (whereX, whereY) => {
-    if (!isNull(this.GameData.chessBoard[whereX][whereY])) {
+    if (!isNull(this.GameData.getPieceAt(whereX, whereY))) {
       this.ongoingPossibleMoves = this.GameData.getPossibleMoves(
         whereX,
         whereY
       );
       if (this.ongoingPossibleMoves.length > 0) {
         console.log(whereX, whereY); // piece is raised !!
-        let strCursor = this.GameData.chessBoard[whereX][
+        let strCursor = this.GameData.getPieceAt(
+          whereX,
           whereY
-        ].getPieceCursorUrl();
+        ).getPieceCursorUrl();
         this.GameView.setCursorToPiece(strCursor);
         this.pieceIsRaised = true;
         this.whereWasPieceRaisedFromX = whereX;
@@ -57,7 +58,7 @@ class ChessController {
         this.GameView.removePieceFromBoard(
           whereX,
           whereY,
-          this.GameData.chessBoard[whereX][whereY].getClassName()
+          this.GameData.getPieceAt(whereX, whereY).getClassName()
         );
         this.GameView.bindMouseUp(this.releasedPieceEvent);
       } else console.log("No possible moves !");
@@ -65,10 +66,9 @@ class ChessController {
   };
 
   releasedPieceEvent = (whereX, whereY) => {
-    // TO DO HERE: promoting pawn !!
     if (!this.pieceIsRaised)
       throw "Released a piece on the board without RAISING IT !";
-    this.pieceIsRaised = false;
+
     this.GameView.turnOnCells(
       this.ongoingPossibleMoves,
       true /* this flag says turn OFF !*/
@@ -90,31 +90,36 @@ class ChessController {
       if (lastX == whereX && lastY == whereY) bWillMoveThere = false; // not an actual move !!
 
     if (bWillMoveThere) {
-      let moveNotation = this.GameData.movePiece(
-        lastX,
-        lastY,
-        whereX,
-        whereY,
-        this.removePieceEvent
-      );
-      this.GameView.addMoveToList(moveNotation);
-      this.GameView.putPieceOnBoard(
-        whereX,
-        whereY,
-        this.GameData.chessBoard[whereX][whereY].getClassName()
-      );
-      this.goNextMove();
+      // pawn promotion check
+      if (this.GameData.isMoveAPawnPromotion(lastX, lastY, whereX, whereY)) {
+        // is this a promoting pawn ?
+      } else {
+        let moveNotation = this.GameData.movePiece(
+          lastX,
+          lastY,
+          whereX,
+          whereY,
+          this.removePieceEvent
+        );
+        this.GameView.addMoveToList(moveNotation);
+        this.GameView.putPieceOnBoard(
+          whereX,
+          whereY,
+          this.GameData.getPieceAt(whereX, whereY).getClassName()
+        );
+        this.goNextMove();
+      }
     } // released somewhere else !!
     else if (
       !isNull(lastX) &&
       !isNull(lastY) &&
-      !isNull(this.GameData.chessBoard[lastX][lastY])
+      !isNull(this.GameData.getPieceAt(lastX, lastY))
     ) {
       // put back the piece
       this.GameView.putPieceOnBoard(
         lastX,
         lastY,
-        this.GameData.chessBoard[lastX][lastY].getClassName()
+        this.GameData.getPieceAt(lastX, lastY).getClassName()
       );
       this.GameView.bindMouseDown(lastX, lastY, this.mouseDownOnPieceEvent);
     } else throw "Release mouse without press ?!!";
@@ -122,18 +127,18 @@ class ChessController {
     this.whereWasPieceRaisedFromX = null;
     this.whereWasPieceRaisedFromY = null;
     this.ongoingPossibleMoves = null;
-
+    this.pieceIsRaised = false;
     this.GameView.setCursorToDefault();
   };
 
   refreshViewFromModel() {
     for (let row = 0; row < BOARD_SIZE; row++)
       for (let col = 0; col < BOARD_SIZE; col++)
-        if (!isNull(this.GameData.chessBoard[row][col])) {
+        if (!isNull(this.GameData.getPieceAt(row, col))) {
           this.GameView.putPieceOnBoard(
             row,
             col,
-            this.GameData.chessBoard[row][col].getClassName()
+            this.GameData.getPieceAt(row, col).getClassName()
           );
         }
   }
@@ -159,6 +164,7 @@ class ChessController {
 
     // remove listeners for the other pieces
     piecesToStayStill.forEach(curPiece => {
+      // remove piece and add it again to remove the listeners !
       this.GameView.removePieceFromBoard(
         curPiece.RowPos,
         curPiece.ColPos,
