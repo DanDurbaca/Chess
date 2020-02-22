@@ -40,6 +40,7 @@ class ChessModel {
         // to do >> all pieces !
       }
     }
+    new Queen(PieceColors.Black, this.chessBoard).movePiece(0, 4);
   }
 
   isMoveAPawnPromotion(fromX, fromY, toX, toY) {
@@ -70,6 +71,44 @@ class ChessModel {
       throw "Out of the board position";
     if (isNull(board[fromX][fromY])) throw "Not a piece to move from";
     return board[fromX][fromY].getPossibleMoves();
+  }
+
+  transformPiece(row, col, strToTransformInto, controllerCallBack) {
+    if (!isNull(this.chessBoard[row][col])) {
+      let colorOfPiece = this.chessBoard[row][col].PieceColor;
+      switch (strToTransformInto) {
+        case ChessPieceTypes.Rook:
+          new Rook(colorOfPiece, this.chessBoard).movePiece(
+            row,
+            col,
+            controllerCallBack
+          );
+          break;
+        case ChessPieceTypes.Knight:
+          new Knight(colorOfPiece, this.chessBoard).movePiece(
+            row,
+            col,
+            controllerCallBack
+          );
+          break;
+        case ChessPieceTypes.Bishop:
+          new Bishop(colorOfPiece, this.chessBoard).movePiece(
+            row,
+            col,
+            controllerCallBack
+          );
+          break;
+        case ChessPieceTypes.Queen:
+          new Queen(colorOfPiece, this.chessBoard).movePiece(
+            row,
+            col,
+            controllerCallBack
+          );
+          break;
+        default:
+          throw "Cannot transform piece into " + strToTransformInto;
+      }
+    } else throw "Cannot transform a non existing piece";
   }
 
   static arePositionsIdentical(pos1, pos2) {

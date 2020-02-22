@@ -1,7 +1,23 @@
 "use strict";
 
+const BODY_TAG = "body";
 const BOARD_ID = "placeHolder";
 const MOVES_ID = "listOfMoves";
+const PROMOTION_SQR_TOP_ID = "promotionSquareTop";
+const PROMOTION_SQR_BOT_ID = "promotionSquareBot";
+
+const PROMOTION_STR = "Promo";
+const CELL_STR = "cell";
+
+const SQUARE_CLASS = "square";
+const ADDRESS_LINE_CLASS = "addressLine";
+const ONE_LINE_CLASS = "oneLine";
+
+const BLACK_SQR_CLASS = "blackSquare";
+const WHITE_SQR_CLASS = "whiteSquare";
+const TARGET_SQR_CLASS = "targetSquare";
+const MIDDLE_LINE_CLASS = "middleLine";
+const PROMO_CLASS = "promotingPieces";
 
 class ChessView {
   constructor() {
@@ -14,7 +30,7 @@ class ChessView {
     window.addEventListener("load", event => {
       // When adding the function name here (no arrow function)
       // this will NOT be the class - but the target html element !!
-      this.Body = document.getElementsByTagName("body");
+      this.Body = document.getElementsByTagName(BODY_TAG);
       this.ChessPlaceHolder = document.getElementById(BOARD_ID);
       this.listOfMoves = document.getElementById(MOVES_ID);
       handlerFromController();
@@ -42,6 +58,37 @@ class ChessView {
     );
   }
 
+  bindPromotionEvent(X, Y, handlerFromController) {
+    let idLocation = "";
+    if (X == 0)
+      // WHITE is promoting a pawn
+      idLocation = PROMOTION_SQR_TOP_ID;
+    else if (X == BOARD_SIZE - 1)
+      // black is promoting a pawn
+      idLocation = PROMOTION_SQR_BOT_ID;
+    else throw "Not a promotion ! Wrong call !";
+    idLocation += Y;
+    let colorOfPiece = X == 0 ? PieceColors.White : PieceColors.Black;
+    let promoLocation = document.getElementById(idLocation);
+    let promotables = ChessView.getPromotablesElements(colorOfPiece);
+    promoLocation.appendChild(promotables);
+    let _mouseUp = event => {
+      // WHY MOUSEUP and NOT CLICK ????
+      // Check the event. target id and IF IT is a promotable selected call the handler accordingly
+      if (ChessView.isIDOfAPromotable(event.target.id)) {
+        handlerFromController(
+          ChessView.getPromotionPieceFromId(event.target.id, colorOfPiece),
+          X,
+          Y
+        );
+      } else handlerFromController(null);
+      document.removeEventListener("mouseup", _mouseUp, true);
+      promoLocation.removeChild(promotables);
+      // remove the promotables div from the board !
+    };
+    document.addEventListener("mouseup", _mouseUp, true);
+  }
+
   bindMouseUp(handlerFromController) {
     let _mouseUp = event => {
       // get x and y from event.target.id
@@ -61,11 +108,11 @@ class ChessView {
   displayBoardSquares(boardSize) {
     //create a first empty new line
     let addressLine = document.createElement("div");
-    addressLine.classList.add("oneLine");
-    addressLine.classList.add("topLine");
+    addressLine.classList.add(ADDRESS_LINE_CLASS);
     for (let j = 0; j < boardSize; j++) {
       let newSquare = document.createElement("div");
-      newSquare.classList.add("square");
+      newSquare.style.position = "relative";
+      newSquare.id = PROMOTION_SQR_TOP_ID + j;
       addressLine.appendChild(newSquare);
       newSquare.innerHTML = String.fromCharCode(ALPHA + j);
     }
@@ -73,26 +120,30 @@ class ChessView {
 
     for (let i = 0; i < boardSize; i++) {
       let newLine = document.createElement("div");
-      newLine.classList.add("oneLine");
+      newLine.classList.add(ONE_LINE_CLASS);
       for (let j = 0; j < boardSize; j++) {
         let newSquare = document.createElement("div");
         newSquare.id = ChessView.getIdFromCoordinates(i, j);
-        newSquare.classList.add("square");
+        newSquare.classList.add(SQUARE_CLASS);
 
-        if ((i + j) % 2 == 0) newSquare.classList.add("whiteSquare");
-        else newSquare.classList.add("blackSquare");
+        if ((i + j) % 2 == 0) newSquare.classList.add(WHITE_SQR_CLASS);
+        else newSquare.classList.add(BLACK_SQR_CLASS);
         newLine.appendChild(newSquare);
       }
       let newSquare = document.createElement("div"); // add one more square for address
-      newSquare.classList.add("square");
-      newSquare.classList.add("middleLine");
+      newSquare.classList.add(SQUARE_CLASS);
+      newSquare.classList.add(MIDDLE_LINE_CLASS);
       newSquare.innerHTML = (BOARD_SIZE - i).toString();
       newLine.appendChild(newSquare);
 
       this.ChessPlaceHolder.appendChild(newLine);
     }
     addressLine = addressLine.cloneNode(true);
-    addressLine.classList.remove("topLine");
+    addressLine.childNodes.forEach(curNode => {
+      let numericPart = curNode.id.substring(18); // remove PROMOTION_SQR_TOP_ID
+      curNode.id = PROMOTION_SQR_BOT_ID + numericPart;
+    });
+
     this.ChessPlaceHolder.appendChild(addressLine);
   }
 
@@ -129,23 +180,64 @@ class ChessView {
       if (p.length != 2) throw "Invalid position given !!";
       let elemId = ChessView.getIdFromCoordinates(p[0], p[1]);
       let domElem = document.getElementById(elemId);
-      if (!off) domElem.classList.add("targetSquare");
-      else domElem.classList.remove("targetSquare");
+      if (!off) domElem.classList.add(TARGET_SQR_CLASS);
+      else domElem.classList.remove(TARGET_SQR_CLASS);
     }
   }
 
   // static member functions from here on ->
 
+  static getPromotionPieceFromId(givenId, colorStr) {
+    /*if (!ChessView.isIDOfAPromotable(givenId))
+      return null;*/
+
+    // assume this starts with PROMOTION_STR
+    return givenId.substring(PROMOTION_STR.length + colorStr.length);
+  }
+
+  static isIDOfAPromotable(givenId) {
+    return this.stringStartsWith(givenId, PROMOTION_STR);
+  }
+
   static isIdACell(givenId) {
-    return givenId.substring(0, 4) == "cell";
+    return this.stringStartsWith(givenId, CELL_STR);
+  }
+
+  static stringStartsWith(testStr, checkAgainst) {
+    return testStr.substring(0, checkAgainst.length) == checkAgainst;
   }
 
   static getIdFromCoordinates(i, j) {
-    return "cell" + parseInt(i) + "-" + parseInt(j);
+    return CELL_STR + parseInt(i) + "-" + parseInt(j);
   }
 
   static getCoordinatesFromId(givenId) {
-    let numericPart = givenId.substring(4); // remove "cell" from the id
+    let numericPart = givenId.substring(CELL_STR.length); // remove "cell" from the id
     return numericPart.split("-");
+  }
+
+  static getPromotablesElements(color) {
+    let promotingPieces = document.createElement("div");
+    promotingPieces.classList.add(PROMO_CLASS);
+
+    let arrOfPromotables = [];
+    if (color == PieceColors.Black) {
+      arrOfPromotables = BLACK_PROMOTABLES;
+      promotingPieces.style.flexDirection = "column-reverse";
+      promotingPieces.style.bottom = "0px";
+    } else if (color == PieceColors.White) {
+      arrOfPromotables = WHITE_PROMOTABLES;
+      promotingPieces.style.flexDirection = "column";
+      promotingPieces.style.top = "0px";
+    } else throw "Unknown color received as param !";
+
+    arrOfPromotables.forEach(pieceClass => {
+      let promotingPiece = document.createElement("div");
+      promotingPiece.id = PROMOTION_STR + pieceClass;
+      promotingPiece.classList.add(SQUARE_CLASS);
+      promotingPiece.classList.add(pieceClass);
+      promotingPieces.appendChild(promotingPiece);
+    });
+    return promotingPieces;
   }
 }

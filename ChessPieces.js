@@ -1,5 +1,11 @@
 "use strict";
 // constants are here !!
+
+const PieceColors = {
+  White: "white",
+  Black: "black"
+};
+
 const ChessPieceTypes = {
   Pawn: "Pawn",
   Rook: "Rook",
@@ -9,10 +15,19 @@ const ChessPieceTypes = {
   King: "King"
 };
 
-const PieceColors = {
-  White: "white",
-  Black: "black"
-};
+const WHITE_PROMOTABLES = [
+  "whiteQueen",
+  "whiteRook",
+  "whiteBishop",
+  "whiteKnight"
+];
+
+const BLACK_PROMOTABLES = [
+  "blackQueen",
+  "blackRook",
+  "blackBishop",
+  "blackKnight"
+];
 
 class ChessPiece {
   constructor(color, name = null, board = null) {

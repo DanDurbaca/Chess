@@ -9,13 +9,18 @@ class ChessController {
     this.GameData = model;
     this.GameView = view;
 
+    this.resetMove();
+
+    this.WhiteToMove = true; // TO DO -> alternating moves !
+
+    this.GameView.bindPageLoad(this.loadedPageEvent);
+  }
+
+  resetMove() {
     this.pieceIsRaised = false;
     this.ongoingPossibleMoves = null;
     this.whereWasPieceRaisedFromX = null;
     this.whereWasPieceRaisedFromY = null;
-    this.WhiteToMove = true; // TO DO -> alternating moves !
-
-    this.GameView.bindPageLoad(this.loadedPageEvent);
   }
 
   loadedPageEvent = () => {
@@ -65,6 +70,65 @@ class ChessController {
     } else throw "Trying to raise inexistent piece";
   };
 
+  promotedPawnEvent = (transformInto, whereX, whereY) => {
+    if (!isNull(transformInto)) {
+      this.makeAMove(whereX, whereY);
+
+      this.GameData.transformPiece(
+        whereX,
+        whereY,
+        transformInto,
+        this.removePieceEvent // to update the view
+      );
+      this.GameView.putPieceOnBoard(
+        whereX,
+        whereY,
+        this.GameData.getPieceAt(whereX, whereY).getClassName()
+      );
+    } else {
+      this.putBackAPiece();
+    }
+    this.resetMove();
+  };
+
+  makeAMove(whereX, whereY) {
+    let lastX = this.whereWasPieceRaisedFromX;
+    let lastY = this.whereWasPieceRaisedFromY;
+
+    let moveNotation = this.GameData.movePiece(
+      lastX,
+      lastY,
+      whereX,
+      whereY,
+      this.removePieceEvent
+    );
+    this.GameView.addMoveToList(moveNotation);
+    this.GameView.putPieceOnBoard(
+      whereX,
+      whereY,
+      this.GameData.getPieceAt(whereX, whereY).getClassName()
+    );
+    this.goNextMove();
+  }
+
+  putBackAPiece() {
+    let lastX = this.whereWasPieceRaisedFromX;
+    let lastY = this.whereWasPieceRaisedFromY;
+
+    if (
+      !isNull(lastX) &&
+      !isNull(lastY) &&
+      !isNull(this.GameData.getPieceAt(lastX, lastY))
+    ) {
+      this.GameView.putPieceOnBoard(
+        lastX,
+        lastY,
+        this.GameData.getPieceAt(lastX, lastY).getClassName()
+      );
+      this.GameView.bindMouseDown(lastX, lastY, this.mouseDownOnPieceEvent);
+    } else throw "Putting back an inexistent piece ?!!";
+  }
+
   releasedPieceEvent = (whereX, whereY) => {
     if (!this.pieceIsRaised)
       throw "Released a piece on the board without RAISING IT !";
@@ -78,6 +142,7 @@ class ChessController {
     let lastY = this.whereWasPieceRaisedFromY;
 
     let bWillMoveThere = false;
+    let bKeepPieceRaised = false;
     // check params if ok !!
     if (!isNull(whereX) && !isNull(whereY)) {
       let targetPosArr = [whereX, whereY];
@@ -93,41 +158,21 @@ class ChessController {
       // pawn promotion check
       if (this.GameData.isMoveAPawnPromotion(lastX, lastY, whereX, whereY)) {
         // is this a promoting pawn ?
+        this.GameView.bindPromotionEvent(
+          whereX,
+          whereY,
+          this.promotedPawnEvent
+        );
+        bKeepPieceRaised = true;
       } else {
-        let moveNotation = this.GameData.movePiece(
-          lastX,
-          lastY,
-          whereX,
-          whereY,
-          this.removePieceEvent
-        );
-        this.GameView.addMoveToList(moveNotation);
-        this.GameView.putPieceOnBoard(
-          whereX,
-          whereY,
-          this.GameData.getPieceAt(whereX, whereY).getClassName()
-        );
-        this.goNextMove();
+        this.makeAMove(whereX, whereY);
       }
     } // released somewhere else !!
-    else if (
-      !isNull(lastX) &&
-      !isNull(lastY) &&
-      !isNull(this.GameData.getPieceAt(lastX, lastY))
-    ) {
-      // put back the piece
-      this.GameView.putPieceOnBoard(
-        lastX,
-        lastY,
-        this.GameData.getPieceAt(lastX, lastY).getClassName()
-      );
-      this.GameView.bindMouseDown(lastX, lastY, this.mouseDownOnPieceEvent);
-    } else throw "Release mouse without press ?!!";
+    else this.putBackAPiece();
 
-    this.whereWasPieceRaisedFromX = null;
-    this.whereWasPieceRaisedFromY = null;
-    this.ongoingPossibleMoves = null;
-    this.pieceIsRaised = false;
+    if (!bKeepPieceRaised) {
+      this.resetMove();
+    }
     this.GameView.setCursorToDefault();
   };
 

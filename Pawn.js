@@ -70,7 +70,7 @@ class Pawn extends ChessPiece {
     if (this.PieceColor == PieceColors.Black) directionOfMove = 1;
     else directionOfMove = -1;
     let targetRow = this.RowPos + directionOfMove;
-    if (targetRow > 0 && targetRow < BOARD_SIZE - 1) {
+    if (targetRow >= 0 && targetRow <= BOARD_SIZE - 1) {
       if (isNull(fullBoard[targetRow][this.ColPos]))
         arrRetVals.push(new Array(targetRow, this.ColPos)); // no capture
       let tryouts = [-1, 1];

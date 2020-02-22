@@ -3,9 +3,7 @@ body {
 }
 
 #placeHolder {
-  position: relative;
-  height: 700px;
-  width: 640px;
+  width: 630px;
   background-color: teal;
 }
 
@@ -16,7 +14,6 @@ body {
 }
 
 .square {
-  /*background-color: thistle;*/
   display: inline-block;
   width: 70px;
   height: 70px;
@@ -27,17 +24,7 @@ body {
   /* Do not repeat the image */
   background-size: cover;
   /* Resize the background image to cover the entire container */
-  text-align: left;
-}
-
-.blackPawn {
-  background-image: url("./../img/black_pawn.png");
-  cursor: grab;
-}
-
-.whitePawn {
-  background-image: url("./../img/white_pawn.png");
-  cursor: grab;
+  text-align: center;
 }
 
 .targetSquare {
@@ -55,47 +42,34 @@ body {
 }
 
 .oneLine {
-  display: block;
-  height: 70px;
+  display: flex;
   background-color: white;
-  overflow: hidden;
-  text-align: center;
   white-space: nowrap;
 }
 
-.topLine {
-  line-height: 120px;
-  /* for correctly alligning the address text (a-h)*/
+.addressLine {
+  display: flex;
+  justify-content: space-around;
+  width: 560px;
 }
 
 .middleLine {
   padding: 5px;
-  vertical-align: 30px;
+  text-align: left;
+  line-height: 70px;
 }
 
-#test {
-  position: relative;
-  width: 500px;
-  height: 500px;
-  background-color: aqua;
+.promotingPieces {
+  display: flex;
+  position: absolute;
 }
 
-.blackQueen {
-  background-image: url("./../img/black_queen.png");
-  cursor: grab;
+.promotingPieces .square {
+  width: 35px;
+  height: 35px;
 }
 
-.blackRook {
-  background-image: url("./../img/black_rook.png");
-  cursor: grab;
-}
-
-.blackBishop {
-  background-image: url("./../img/black_bishop.png");
-  cursor: grab;
-}
-
-.blackKnight {
-  background-image: url("./../img/black_knight.png");
-  cursor: grab;
+.promotingPieces .square:hover {
+  width: 70px;
+  height: 70px;
 }
