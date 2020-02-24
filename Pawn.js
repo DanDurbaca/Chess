@@ -1,8 +1,8 @@
 "use strict";
 
 class Pawn extends ChessPiece {
-  constructor(color, board = null) {
-    super(color, ChessPieceTypes.Pawn, board);
+  constructor(xPos, yPos, color, board) {
+    super(color, ChessPieceTypes.Pawn, board, xPos, yPos);
   }
 
   static ghostPawn = null;
@@ -25,6 +25,7 @@ class Pawn extends ChessPiece {
   }
 
   movePiece(whereX, whereY, controllerHandler) {
+    let fullBoard = this.Board;
     let strRetVal = this.getMoveNotation(whereX, whereY);
     // is this pawn advancing two rows ? - if so - set the flag ghostPawn !
     let oldRow = this.RowPos;
@@ -46,8 +47,8 @@ class Pawn extends ChessPiece {
       if (this.PieceColor == PieceColors.Black) oldGhost[0] -= 1;
       else oldGhost[0] += 1;
 
-      controllerHandler(this.Board[oldGhost[0]][oldGhost[1]]); // remove piece from View
-      this.Board[oldGhost[0]][oldGhost[1]] = null;
+      controllerHandler(fullBoard[oldGhost[0]][oldGhost[1]]); // remove piece from View
+      fullBoard[oldGhost[0]][oldGhost[1]] = null;
     }
 
     if (Math.abs(oldRow - whereX) == 2) {

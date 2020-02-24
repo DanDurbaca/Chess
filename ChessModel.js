@@ -8,7 +8,6 @@ const WHITE_PAWNS_LINE = 6;
 class ChessModel {
   constructor() {
     this.initBoard();
-    // console.log(this.chessBoard);
   }
 
   getPiecesOfColor(selectColor) {
@@ -34,13 +33,13 @@ class ChessModel {
         this.chessBoard[row][col] = null;
         // init chessBoard with Pawns
         if (row == BLACK_PAWNS_LINE)
-          new Pawn(PieceColors.Black, this.chessBoard).movePiece(row, col);
+          new Pawn(row, col, PieceColors.Black, this.chessBoard);
         if (row == WHITE_PAWNS_LINE)
-          new Pawn(PieceColors.White, this.chessBoard).movePiece(row, col);
+          new Pawn(row, col, PieceColors.White, this.chessBoard);
         // to do >> all pieces !
       }
     }
-    new Queen(PieceColors.Black, this.chessBoard).movePiece(0, 4);
+    new Queen(0, 4, PieceColors.Black, this.chessBoard);
   }
 
   isMoveAPawnPromotion(fromX, fromY, toX, toY) {
@@ -73,37 +72,21 @@ class ChessModel {
     return board[fromX][fromY].getPossibleMoves();
   }
 
-  transformPiece(row, col, strToTransformInto, controllerCallBack) {
+  transformPiece(row, col, strToTransformInto) {
     if (!isNull(this.chessBoard[row][col])) {
       let colorOfPiece = this.chessBoard[row][col].PieceColor;
       switch (strToTransformInto) {
         case ChessPieceTypes.Rook:
-          new Rook(colorOfPiece, this.chessBoard).movePiece(
-            row,
-            col,
-            controllerCallBack
-          );
+          new Rook(row, col, colorOfPiece, this.chessBoard);
           break;
         case ChessPieceTypes.Knight:
-          new Knight(colorOfPiece, this.chessBoard).movePiece(
-            row,
-            col,
-            controllerCallBack
-          );
+          new Knight(row, col, colorOfPiece, this.chessBoard);
           break;
         case ChessPieceTypes.Bishop:
-          new Bishop(colorOfPiece, this.chessBoard).movePiece(
-            row,
-            col,
-            controllerCallBack
-          );
+          new Bishop(row, col, colorOfPiece, this.chessBoard);
           break;
         case ChessPieceTypes.Queen:
-          new Queen(colorOfPiece, this.chessBoard).movePiece(
-            row,
-            col,
-            controllerCallBack
-          );
+          new Queen(row, col, colorOfPiece, this.chessBoard);
           break;
         default:
           throw "Cannot transform piece into " + strToTransformInto;

@@ -72,15 +72,18 @@ class ChessController {
 
   promotedPawnEvent = (transformInto, whereX, whereY) => {
     if (!isNull(transformInto)) {
-      this.makeAMove(whereX, whereY);
+      this.makeAMove(whereX, whereY); // move the pawn first
+
+      this.removePieceEvent(this.GameData.getPieceAt(whereX, whereY)); // remove the pawn from the view
 
       this.GameData.transformPiece(
+        // transform it !
         whereX,
         whereY,
-        transformInto,
-        this.removePieceEvent // to update the view
+        transformInto
       );
       this.GameView.putPieceOnBoard(
+        // put back the new piece in the view
         whereX,
         whereY,
         this.GameData.getPieceAt(whereX, whereY).getClassName()
