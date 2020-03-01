@@ -39,7 +39,23 @@ class ChessModel {
         // to do >> all pieces !
       }
     }
-    new Queen(0, 4, PieceColors.Black, this.chessBoard);
+    new Queen(0, 3, PieceColors.Black, this.chessBoard);
+    new Rook(0, 0, PieceColors.Black, this.chessBoard);
+    new Rook(0, 7, PieceColors.Black, this.chessBoard);
+    new Knight(0, 1, PieceColors.Black, this.chessBoard);
+    new Knight(0, 6, PieceColors.Black, this.chessBoard);
+    new Bishop(0, 2, PieceColors.Black, this.chessBoard);
+    new Bishop(0, 5, PieceColors.Black, this.chessBoard);
+    new King(0, 4, PieceColors.Black, this.chessBoard);
+
+    new Queen(7, 3, PieceColors.White, this.chessBoard);
+    new Rook(7, 0, PieceColors.White, this.chessBoard);
+    new Rook(7, 7, PieceColors.White, this.chessBoard);
+    new Knight(7, 1, PieceColors.White, this.chessBoard);
+    new Knight(7, 6, PieceColors.White, this.chessBoard);
+    new Bishop(7, 2, PieceColors.White, this.chessBoard);
+    new Bishop(7, 5, PieceColors.White, this.chessBoard);
+    new King(7, 4, PieceColors.White, this.chessBoard);
   }
 
   isMoveAPawnPromotion(fromX, fromY, toX, toY) {

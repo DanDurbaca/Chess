@@ -8,6 +8,11 @@
   cursor: grab;
 }
 
+.blackKing {
+  background-image: url("./../img/black_king.png");
+  cursor: grab;
+}
+
 .blackRook {
   background-image: url("./../img/black_rook.png");
   cursor: grab;
@@ -32,6 +37,11 @@
 
 .whiteQueen {
   background-image: url("./../img/white_queen.png");
+  cursor: grab;
+}
+
+.whiteKing {
+  background-image: url("./../img/white_king.png");
   cursor: grab;
 }
 
