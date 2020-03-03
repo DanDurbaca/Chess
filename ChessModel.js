@@ -1,9 +1,4 @@
 "use strict";
-const BOARD_SIZE = 8;
-const ALPHA = 97;
-
-const BLACK_PAWNS_LINE = 1;
-const WHITE_PAWNS_LINE = 6;
 
 class ChessModel {
   constructor() {
@@ -39,6 +34,7 @@ class ChessModel {
         // to do >> all pieces !
       }
     }
+    // BAD -> HARD CODED positions !!!!!
     new Queen(0, 3, PieceColors.Black, this.chessBoard);
     new Rook(0, 0, PieceColors.Black, this.chessBoard);
     new Rook(0, 7, PieceColors.Black, this.chessBoard);

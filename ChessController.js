@@ -1,10 +1,5 @@
 "use strict";
 
-function isNull(someValue) {
-  // OVERALL used function to check is a value is EXACTLY null !
-  return someValue === null;
-}
-
 /*
 This class is the link between the Model and the view.
 Its using callbacks to update things.
