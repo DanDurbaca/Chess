@@ -62,7 +62,9 @@ class ChessPiece {
   }
 
   getPieceCursorUrl() {
-    return "url('./img/cursor-" + this.getImageName() + ".png'), auto";
+    return (
+      MOUSE_POINTER_URL_START + this.getImageName() + MOUSE_POINTER_URL_END
+    );
   }
 
   getClassName() {

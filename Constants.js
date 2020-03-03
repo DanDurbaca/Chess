@@ -51,6 +51,9 @@ const TARGET_SQR_CLASS = "targetSquare";
 const MIDDLE_LINE_CLASS = "middleLine";
 const PROMO_CLASS = "promotingPieces";
 
+const MOUSE_POINTER_URL_START = "url('./img/cursor-";
+const MOUSE_POINTER_URL_END = ".png'), auto";
+
 function isNull(someValue) {
   // OVERALL used function to check is a value is EXACTLY null !
   return someValue === null;

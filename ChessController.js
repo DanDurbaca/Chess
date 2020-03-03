@@ -1,7 +1,7 @@
 "use strict";
 
 /*
-This class is the link between the Model and the view.
+This class is the link between the Model and the View.
 Its using callbacks to update things.
 */
 
