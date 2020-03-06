@@ -72,4 +72,5 @@ body {
 .promotingPieces .square:hover {
   width: 70px;
   height: 70px;
+  transition: width 0.5s, height 0.5s;
 }

@@ -1,33 +1,4 @@
 "use strict";
-// constants are here !!
-
-const PieceColors = {
-  White: "white",
-  Black: "black"
-};
-
-const ChessPieceTypes = {
-  Pawn: "Pawn",
-  Rook: "Rook",
-  Knight: "Knight",
-  Bishop: "Bishop",
-  Queen: "Queen",
-  King: "King"
-};
-
-const WHITE_PROMOTABLES = [
-  "whiteQueen",
-  "whiteRook",
-  "whiteBishop",
-  "whiteKnight"
-];
-
-const BLACK_PROMOTABLES = [
-  "blackQueen",
-  "blackRook",
-  "blackBishop",
-  "blackKnight"
-];
 
 class ChessPiece {
   constructor(color, name, board, xPos, yPos) {
@@ -91,7 +62,9 @@ class ChessPiece {
   }
 
   getPieceCursorUrl() {
-    return "url('./img/cursor-" + this.getImageName() + ".png'), auto";
+    return (
+      MOUSE_POINTER_URL_START + this.getImageName() + MOUSE_POINTER_URL_END
+    );
   }
 
   getClassName() {

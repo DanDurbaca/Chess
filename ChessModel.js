@@ -1,26 +1,30 @@
 "use strict";
-const BOARD_SIZE = 8;
-const ALPHA = 97;
 
-const BLACK_PAWNS_LINE = 1;
-const WHITE_PAWNS_LINE = 6;
+/*
+This class should hold DATA and act on it.
+*/
 
 class ChessModel {
   constructor() {
-    this.initBoard();
+    this.initBoard(); // call the initialiser of the board
   }
 
   getPiecesOfColor(selectColor) {
+    // get all the pieces of a given color
     let arrRetVal = new Array();
     this.chessBoard.forEach(row => {
       row.forEach(cell => {
         if (!isNull(cell))
-          if (cell.PieceColor == selectColor) arrRetVal.push(cell);
+          if (cell.PieceColor == selectColor)
+            // every non empty cell
+            // of a given color
+            arrRetVal.push(cell); // get pushed in the return value array
       });
     });
     return arrRetVal;
   }
 
+  // get a piece at the given coordinates
   getPieceAt(X, Y) {
     return this.chessBoard[X][Y];
   }
@@ -39,6 +43,7 @@ class ChessModel {
         // to do >> all pieces !
       }
     }
+    // BAD -> HARD CODED positions !!!!!
     new Queen(0, 3, PieceColors.Black, this.chessBoard);
     new Rook(0, 0, PieceColors.Black, this.chessBoard);
     new Rook(0, 7, PieceColors.Black, this.chessBoard);
@@ -58,6 +63,7 @@ class ChessModel {
     new King(7, 4, PieceColors.White, this.chessBoard);
   }
 
+  // is the move from -> to a pawn promotion ?
   isMoveAPawnPromotion(fromX, fromY, toX, toY) {
     // assume a VALID move !
     let bRetVal = false;
@@ -66,12 +72,13 @@ class ChessModel {
     return bRetVal;
   }
 
+  // move a piece and notify the controller back !
   movePiece(fromX, fromY, toX, toY, controllerHandler) {
     let board = this.chessBoard;
     let strMove = "";
     if (fromX != toX || fromY != toY) {
       if (!isNull(board[fromX][fromY])) {
-        strMove = board[fromX][fromY].movePiece(toX, toY, controllerHandler);
+        strMove = board[fromX][fromY].movePiece(toX, toY, controllerHandler); // get the move notation while moving
       } else
         strMove =
           "Trying to move inexistent piece from: " + fromX + "," + fromY;
@@ -79,15 +86,17 @@ class ChessModel {
     return strMove;
   }
 
+  // get all Possible moves of a piece located at from !
   getPossibleMoves(fromX, fromY) {
     let board = this.chessBoard;
     if (isNull(fromX) || isNull(fromY)) throw "Invalid from position";
     if (fromX < 0 || fromX >= BOARD_SIZE || fromY < 0 || fromY >= BOARD_SIZE)
       throw "Out of the board position";
     if (isNull(board[fromX][fromY])) throw "Not a piece to move from";
-    return board[fromX][fromY].getPossibleMoves();
+    return board[fromX][fromY].getPossibleMoves(); // call the piece method that gives us possible movements
   }
 
+  // transform a pawn into something else
   transformPiece(row, col, strToTransformInto) {
     if (!isNull(this.chessBoard[row][col])) {
       let colorOfPiece = this.chessBoard[row][col].PieceColor;
@@ -110,12 +119,13 @@ class ChessModel {
     } else throw "Cannot transform a non existing piece";
   }
 
+  // are two arrays of size 2 (positions) identical (have the same value) ??
   static arePositionsIdentical(pos1, pos2) {
     // receive two arrays of size 2 and compare them, element by element
     if (!Array.isArray(pos1) || !Array.isArray(pos2))
       throw "No array arguments for positions ";
     if (pos1.length != pos2.length || pos1.length != 2)
       throw "Incorrect length of positions (required 2)";
-    return pos1[0] == pos2[0] && pos1[1] == pos2[1];
+    return pos1[0] == pos2[0] && pos1[1] == pos2[1]; // the actual check
   }
 }

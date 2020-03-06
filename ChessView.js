@@ -1,24 +1,5 @@
 "use strict";
 
-const BODY_TAG = "body";
-const BOARD_ID = "placeHolder";
-const MOVES_ID = "listOfMoves";
-const PROMOTION_SQR_TOP_ID = "promotionSquareTop";
-const PROMOTION_SQR_BOT_ID = "promotionSquareBot";
-
-const PROMOTION_STR = "Promo";
-const CELL_STR = "cell";
-
-const SQUARE_CLASS = "square";
-const ADDRESS_LINE_CLASS = "addressLine";
-const ONE_LINE_CLASS = "oneLine";
-
-const BLACK_SQR_CLASS = "blackSquare";
-const WHITE_SQR_CLASS = "whiteSquare";
-const TARGET_SQR_CLASS = "targetSquare";
-const MIDDLE_LINE_CLASS = "middleLine";
-const PROMO_CLASS = "promotingPieces";
-
 class ChessView {
   constructor() {
     this.Body = null;
@@ -188,9 +169,6 @@ class ChessView {
   // static member functions from here on ->
 
   static getPromotionPieceFromId(givenId, colorStr) {
-    /*if (!ChessView.isIDOfAPromotable(givenId))
-      return null;*/
-
     // assume this starts with PROMOTION_STR
     return givenId.substring(PROMOTION_STR.length + colorStr.length);
   }
