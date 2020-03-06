@@ -225,5 +225,6 @@ class ChessController {
       );
     });
     this.WhiteToMove = !this.WhiteToMove; // switch for the next move
+    console.log("This is a test for git");
   }
 }
