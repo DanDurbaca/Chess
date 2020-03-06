@@ -1,9 +1,6 @@
 const BOARD_SIZE = 8;
 const ALPHA = 97;
 
-const BLACK_PAWNS_LINE = 1;
-const WHITE_PAWNS_LINE = 6;
-
 const PieceColors = {
   White: "white",
   Black: "black"
@@ -56,10 +53,35 @@ const MOUSE_POINTER_URL_START = "url('./img/cursor-";
 const MOUSE_POINTER_URL_END = ".png'), auto";
 
 const CELL_ID_DELIMITER = "-";
+const TAKES_STRING = "x";
 
-const MOVING_DIRECTION = -1; // black is on top -> 0,0 is top,left corner. White is on bottom.
+const MOVING_DIRECTION = -1;
+/* 
+  Black is on top -> 0,0 is top,left corner. White is on bottom.
+*/
+
+const BLACK_PAWNS_LINE = MOVING_DIRECTION == -1 ? 1 : 6;
+const WHITE_PAWNS_LINE = MOVING_DIRECTION == -1 ? 6 : 1;
+
+const BLACK_BACK_LINE = MOVING_DIRECTION == -1 ? 0 : 7;
+const WHITE_BACK_LINE = MOVING_DIRECTION == -1 ? 7 : 0;
+
+const QUEEN_COLUMN = 3;
+const KING_COLUMN = 4;
+const ROOK_COLUMNS = [0, 7];
+const KNIGHT_COLUMNS = [1, 6];
+const BISHOP_COLUMNS = [2, 5];
 
 function isNull(someValue) {
   // OVERALL used function to check is a value is EXACTLY null !
   return someValue === null;
+}
+
+function getColumnName(givenX) {
+  return String.fromCharCode(
+    MOVING_DIRECTION < 0 ? ALPHA + givenX : ALPHA + BOARD_SIZE - 1 - givenX
+  );
+}
+function getRowName(givenY) {
+  return (MOVING_DIRECTION > 0 ? givenY + 1 : BOARD_SIZE - givenY).toString();
 }

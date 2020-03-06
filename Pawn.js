@@ -17,9 +17,8 @@ class Pawn extends ChessPiece {
       !isNull(this.ColPos)
     ) {
       if (whereY != this.ColPos)
-        strRetVal += String.fromCharCode(ALPHA + this.ColPos) + "x";
-      strRetVal +=
-        String.fromCharCode(ALPHA + whereY) + (BOARD_SIZE - whereX).toString();
+        strRetVal += getColumnName(this.ColPos) + TAKES_STRING;
+      strRetVal += getColumnName(whereY) + getRowName(whereX);
     }
     return strRetVal;
   }
@@ -44,8 +43,8 @@ class Pawn extends ChessPiece {
       ChessModel.arePositionsIdentical(targetPos, oldGhost)
     ) {
       // remove the real pawn from the board
-      if (this.PieceColor == PieceColors.Black) oldGhost[0] -= 1;
-      else oldGhost[0] += 1;
+      if (this.PieceColor == PieceColors.Black) oldGhost[0] += MOVING_DIRECTION;
+      else oldGhost[0] += -MOVING_DIRECTION;
 
       controllerHandler(fullBoard[oldGhost[0]][oldGhost[1]]); // remove piece from View
       fullBoard[oldGhost[0]][oldGhost[1]] = null;
@@ -68,8 +67,10 @@ class Pawn extends ChessPiece {
     let parentMoves = this.getPossibleMovesOfUnknownPiece();
     arrRetVals.push(parentMoves);
 
-    if (this.PieceColor == PieceColors.Black) directionOfMove = 1;
-    else directionOfMove = -1;
+    if (this.PieceColor == PieceColors.Black)
+      directionOfMove = -MOVING_DIRECTION;
+    else directionOfMove = MOVING_DIRECTION;
+
     let targetRow = this.RowPos + directionOfMove;
     if (targetRow >= 0 && targetRow <= BOARD_SIZE - 1) {
       if (isNull(fullBoard[targetRow][this.ColPos]))
@@ -96,19 +97,23 @@ class Pawn extends ChessPiece {
     if (
       this.PieceColor == PieceColors.Black &&
       this.RowPos == BLACK_PAWNS_LINE &&
-      isNull(fullBoard[this.RowPos + 1][this.ColPos]) &&
-      isNull(fullBoard[this.RowPos + 2][this.ColPos])
+      isNull(fullBoard[this.RowPos - MOVING_DIRECTION][this.ColPos]) &&
+      isNull(fullBoard[this.RowPos - 2 * MOVING_DIRECTION][this.ColPos])
     ) {
-      arrRetVals.push(new Array(this.RowPos + 2, this.ColPos));
+      arrRetVals.push(
+        new Array(this.RowPos - 2 * MOVING_DIRECTION, this.ColPos)
+      );
     }
 
     if (
       this.PieceColor == PieceColors.White &&
       this.RowPos == WHITE_PAWNS_LINE &&
-      isNull(fullBoard[this.RowPos - 1][this.ColPos]) &&
-      isNull(fullBoard[this.RowPos - 2][this.ColPos])
+      isNull(fullBoard[this.RowPos + MOVING_DIRECTION][this.ColPos]) &&
+      isNull(fullBoard[this.RowPos + 2 * MOVING_DIRECTION][this.ColPos])
     ) {
-      arrRetVals.push(new Array(this.RowPos - 2, this.ColPos));
+      arrRetVals.push(
+        new Array(this.RowPos + 2 * MOVING_DIRECTION, this.ColPos)
+      );
     }
     return arrRetVals;
   }

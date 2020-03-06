@@ -44,23 +44,36 @@ class ChessModel {
       }
     }
     // BAD -> HARD CODED positions !!!!!
-    new Queen(0, 3, PieceColors.Black, this.chessBoard);
-    new Rook(0, 0, PieceColors.Black, this.chessBoard);
-    new Rook(0, 7, PieceColors.Black, this.chessBoard);
-    new Knight(0, 1, PieceColors.Black, this.chessBoard);
-    new Knight(0, 6, PieceColors.Black, this.chessBoard);
-    new Bishop(0, 2, PieceColors.Black, this.chessBoard);
-    new Bishop(0, 5, PieceColors.Black, this.chessBoard);
-    new King(0, 4, PieceColors.Black, this.chessBoard);
+    new Queen(
+      BLACK_BACK_LINE,
+      QUEEN_COLUMN,
+      PieceColors.Black,
+      this.chessBoard
+    );
+    new King(BLACK_BACK_LINE, KING_COLUMN, PieceColors.Black, this.chessBoard);
 
-    new Queen(7, 3, PieceColors.White, this.chessBoard);
-    new Rook(7, 0, PieceColors.White, this.chessBoard);
-    new Rook(7, 7, PieceColors.White, this.chessBoard);
-    new Knight(7, 1, PieceColors.White, this.chessBoard);
-    new Knight(7, 6, PieceColors.White, this.chessBoard);
-    new Bishop(7, 2, PieceColors.White, this.chessBoard);
-    new Bishop(7, 5, PieceColors.White, this.chessBoard);
-    new King(7, 4, PieceColors.White, this.chessBoard);
+    ROOK_COLUMNS.forEach(column => {
+      new Rook(BLACK_BACK_LINE, column, PieceColors.Black, this.chessBoard);
+      new Rook(WHITE_BACK_LINE, column, PieceColors.White, this.chessBoard);
+    });
+
+    KNIGHT_COLUMNS.forEach(column => {
+      new Knight(BLACK_BACK_LINE, column, PieceColors.Black, this.chessBoard);
+      new Knight(WHITE_BACK_LINE, column, PieceColors.White, this.chessBoard);
+    });
+
+    BISHOP_COLUMNS.forEach(column => {
+      new Bishop(BLACK_BACK_LINE, column, PieceColors.Black, this.chessBoard);
+      new Bishop(WHITE_BACK_LINE, column, PieceColors.White, this.chessBoard);
+    });
+
+    new Queen(
+      WHITE_BACK_LINE,
+      QUEEN_COLUMN,
+      PieceColors.White,
+      this.chessBoard
+    );
+    new King(WHITE_BACK_LINE, KING_COLUMN, PieceColors.White, this.chessBoard);
   }
 
   // is the move from -> to a pawn promotion ?

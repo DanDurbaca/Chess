@@ -95,9 +95,7 @@ class ChessView {
       newSquare.style.position = "relative";
       newSquare.id = PROMOTION_SQR_TOP_ID + j;
       addressLine.appendChild(newSquare);
-      newSquare.innerHTML = String.fromCharCode(
-        MOVING_DIRECTION < 0 ? ALPHA + j : ALPHA + BOARD_SIZE - 1 - j
-      );
+      newSquare.innerHTML = getColumnName(j);
     }
     this.ChessPlaceHolder.appendChild(addressLine);
 
@@ -116,10 +114,7 @@ class ChessView {
       let newSquare = document.createElement(DIV_TAG); // add one more square for address
       newSquare.classList.add(SQUARE_CLASS);
       newSquare.classList.add(MIDDLE_LINE_CLASS);
-      newSquare.innerHTML = (MOVING_DIRECTION > 0
-        ? i + 1
-        : BOARD_SIZE - i
-      ).toString();
+      newSquare.innerHTML = getRowName(i);
       newLine.appendChild(newSquare);
 
       this.ChessPlaceHolder.appendChild(newLine);
