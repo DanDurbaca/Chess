@@ -86,24 +86,26 @@ class ChessView {
     document.addEventListener("mouseup", _mouseUp, true);
   }
 
-  displayBoardSquares(boardSize) {
+  displayBoardSquares() {
     //create a first empty new line
-    let addressLine = document.createElement("div");
+    let addressLine = document.createElement(DIV_TAG);
     addressLine.classList.add(ADDRESS_LINE_CLASS);
-    for (let j = 0; j < boardSize; j++) {
-      let newSquare = document.createElement("div");
+    for (let j = 0; j < BOARD_SIZE; j++) {
+      let newSquare = document.createElement(DIV_TAG);
       newSquare.style.position = "relative";
       newSquare.id = PROMOTION_SQR_TOP_ID + j;
       addressLine.appendChild(newSquare);
-      newSquare.innerHTML = String.fromCharCode(ALPHA + j);
+      newSquare.innerHTML = String.fromCharCode(
+        MOVING_DIRECTION < 0 ? ALPHA + j : ALPHA + BOARD_SIZE - 1 - j
+      );
     }
     this.ChessPlaceHolder.appendChild(addressLine);
 
-    for (let i = 0; i < boardSize; i++) {
-      let newLine = document.createElement("div");
+    for (let i = 0; i < BOARD_SIZE; i++) {
+      let newLine = document.createElement(DIV_TAG);
       newLine.classList.add(ONE_LINE_CLASS);
-      for (let j = 0; j < boardSize; j++) {
-        let newSquare = document.createElement("div");
+      for (let j = 0; j < BOARD_SIZE; j++) {
+        let newSquare = document.createElement(DIV_TAG);
         newSquare.id = ChessView.getIdFromCoordinates(i, j);
         newSquare.classList.add(SQUARE_CLASS);
 
@@ -111,17 +113,20 @@ class ChessView {
         else newSquare.classList.add(BLACK_SQR_CLASS);
         newLine.appendChild(newSquare);
       }
-      let newSquare = document.createElement("div"); // add one more square for address
+      let newSquare = document.createElement(DIV_TAG); // add one more square for address
       newSquare.classList.add(SQUARE_CLASS);
       newSquare.classList.add(MIDDLE_LINE_CLASS);
-      newSquare.innerHTML = (BOARD_SIZE - i).toString();
+      newSquare.innerHTML = (MOVING_DIRECTION > 0
+        ? i + 1
+        : BOARD_SIZE - i
+      ).toString();
       newLine.appendChild(newSquare);
 
       this.ChessPlaceHolder.appendChild(newLine);
     }
     addressLine = addressLine.cloneNode(true);
     addressLine.childNodes.forEach(curNode => {
-      let numericPart = curNode.id.substring(18); // remove PROMOTION_SQR_TOP_ID
+      let numericPart = curNode.id.substring(PROMOTION_SQR_TOP_ID.length); // remove PROMOTION_SQR_TOP_ID
       curNode.id = PROMOTION_SQR_BOT_ID + numericPart;
     });
 
@@ -186,31 +191,39 @@ class ChessView {
   }
 
   static getIdFromCoordinates(i, j) {
-    return CELL_STR + parseInt(i) + "-" + parseInt(j);
+    return CELL_STR + parseInt(i) + CELL_ID_DELIMITER + parseInt(j);
   }
 
   static getCoordinatesFromId(givenId) {
     let numericPart = givenId.substring(CELL_STR.length); // remove "cell" from the id
-    return numericPart.split("-");
+    return numericPart.split(CELL_ID_DELIMITER);
   }
 
   static getPromotablesElements(color) {
-    let promotingPieces = document.createElement("div");
+    let promotingPieces = document.createElement(DIV_TAG);
     promotingPieces.classList.add(PROMO_CLASS);
 
     let arrOfPromotables = [];
+    // decide on what direction should the promotables spawn
+    let spawnDown = true;
     if (color == PieceColors.Black) {
       arrOfPromotables = BLACK_PROMOTABLES;
-      promotingPieces.style.flexDirection = "column-reverse";
-      promotingPieces.style.bottom = "0px";
+      spawnDown = MOVING_DIRECTION < 0 ? true : false;
     } else if (color == PieceColors.White) {
       arrOfPromotables = WHITE_PROMOTABLES;
-      promotingPieces.style.flexDirection = "column";
-      promotingPieces.style.top = "0px";
+      spawnDown = MOVING_DIRECTION < 0 ? false : true;
     } else throw "Unknown color received as param !";
 
+    if (spawnDown) {
+      promotingPieces.style.flexDirection = "column-reverse";
+      promotingPieces.style.bottom = "0px";
+    } else {
+      promotingPieces.style.flexDirection = "column";
+      promotingPieces.style.top = "0px";
+    }
+
     arrOfPromotables.forEach(pieceClass => {
-      let promotingPiece = document.createElement("div");
+      let promotingPiece = document.createElement(DIV_TAG);
       promotingPiece.id = PROMOTION_STR + pieceClass;
       promotingPiece.classList.add(SQUARE_CLASS);
       promotingPiece.classList.add(pieceClass);

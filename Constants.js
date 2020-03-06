@@ -33,6 +33,7 @@ const BLACK_PROMOTABLES = [
 ];
 
 const BODY_TAG = "body";
+const DIV_TAG = "div";
 const BOARD_ID = "placeHolder";
 const MOVES_ID = "listOfMoves";
 const PROMOTION_SQR_TOP_ID = "promotionSquareTop";
@@ -53,6 +54,10 @@ const PROMO_CLASS = "promotingPieces";
 
 const MOUSE_POINTER_URL_START = "url('./img/cursor-";
 const MOUSE_POINTER_URL_END = ".png'), auto";
+
+const CELL_ID_DELIMITER = "-";
+
+const MOVING_DIRECTION = -1; // black is on top -> 0,0 is top,left corner. White is on bottom.
 
 function isNull(someValue) {
   // OVERALL used function to check is a value is EXACTLY null !

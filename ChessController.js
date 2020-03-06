@@ -27,7 +27,7 @@ class ChessController {
 
   // when the page finished loading
   loadedPageEvent = () => {
-    this.GameView.displayBoardSquares(BOARD_SIZE); // show the board squares first
+    this.GameView.displayBoardSquares(); // show the board squares first
     this.refreshViewFromModel(); // show the model !
     this.goNextMove(); // next player
   };
