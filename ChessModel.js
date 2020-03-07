@@ -40,10 +40,9 @@ class ChessModel {
           new Pawn(row, col, PieceColors.Black, this.chessBoard);
         if (row == WHITE_PAWNS_LINE)
           new Pawn(row, col, PieceColors.White, this.chessBoard);
-        // to do >> all pieces !
       }
     }
-    // BAD -> HARD CODED positions !!!!!
+
     new Queen(
       BLACK_BACK_LINE,
       QUEEN_COLUMN,

@@ -41,15 +41,12 @@ class ChessView {
 
   bindPromotionEvent(X, Y, handlerFromController) {
     let idLocation = "";
-    if (X == 0)
-      // WHITE is promoting a pawn
-      idLocation = PROMOTION_SQR_TOP_ID;
-    else if (X == BOARD_SIZE - 1)
-      // black is promoting a pawn
-      idLocation = PROMOTION_SQR_BOT_ID;
+    if (X == 0) idLocation = PROMOTION_SQR_TOP_ID;
+    else if (X == BOARD_SIZE - 1) idLocation = PROMOTION_SQR_BOT_ID;
     else throw "Not a promotion ! Wrong call !";
     idLocation += Y;
-    let colorOfPiece = X == 0 ? PieceColors.White : PieceColors.Black;
+    let colorOfPiece =
+      X == BLACK_BACK_LINE ? PieceColors.White : PieceColors.Black;
     let promoLocation = document.getElementById(idLocation);
     let promotables = ChessView.getPromotablesElements(colorOfPiece);
     promoLocation.appendChild(promotables);

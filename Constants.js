@@ -55,7 +55,7 @@ const MOUSE_POINTER_URL_END = ".png'), auto";
 const CELL_ID_DELIMITER = "-";
 const TAKES_STRING = "x";
 
-const MOVING_DIRECTION = -1;
+const MOVING_DIRECTION = 1;
 /* 
   Black is on top -> 0,0 is top,left corner. White is on bottom.
 */
